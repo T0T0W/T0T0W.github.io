@@ -6,15 +6,17 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-image: url('wow-bg.jpg'); /* Replace with your image file */
+      background-image: url('wow-bg.jpg'); /* Replace with your image */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-color: #000; /* Fallback color */
+      background-color: #000;
       color: #ffffff;
       text-align: center;
       margin: 0;
+      padding: 20px;
       height: 100vh;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -32,11 +34,45 @@
       font-weight: bold;
       color: #00ffcc;
       text-shadow: 2px 2px 5px #000;
+      margin-bottom: 30px;
+    }
+
+    .content {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    a {
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    pre {
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 10px;
+      background-color: #111;
+      padding: 10px;
+      border-radius: 10px;
+      font-family: monospace;
     }
 
     @media (max-width: 600px) {
       h1, #countdown {
         font-size: 2em;
+      }
+
+      .content {
+        width: 90%;
       }
     }
   </style>
@@ -45,9 +81,31 @@
   <h1>WoW Everfresh Launches In</h1>
   <div id="countdown">Loading...</div>
 
+  <div class="content">
+    <p><strong>Character creation will open on August 2 at 10:00 AM (Paris time).</strong><br>
+    The server will officially launch at <strong>5:00 PM (Paris time)</strong>.</p>
+
+    <p><strong>Download the WOTLK client here:</strong><br>
+      <a href="http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file" target="_blank">
+        http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file
+      </a>
+    </p>
+
+    <p><strong>Connection Instructions:</strong></p>
+    <pre>
+1) Edit \Data\enUS\realmlist.wtf  
+2) Make sure realmlist.wtf is not set to read-only  
+3) Replace its contents with:
+   set realmlist ef-rebirth.com  
+4) After triple-checking that it's correct,  
+   run Wow.exe and log in using the credentials  
+   you created via the Discord bot.
+    </pre>
+  </div>
+
   <script>
-    // Set the launch time (adjust as needed)
-    const releaseDate = new Date("2025-08-02T20:00:00"); // Aug 2, 2025 at 20:00 (8 PM)
+    // Set the launch date/time to August 2, 2025 at 17:00 (Paris time)
+    const releaseDate = new Date("2025-08-02T17:00:00+02:00");
 
     function updateCountdown() {
       const now = new Date();
