@@ -1,47 +1,60 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Compte à rebours WoW Everfresh</title>
+  <title>WoW Everfresh Launch Countdown</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url('background.jpg'); /* Replace with your image file */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #000; /* Fallback color */
       color: #ffffff;
+      text-align: center;
+      margin: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
+      align-items: center;
+      backdrop-filter: brightness(0.6);
     }
 
     h1 {
-      font-size: 2.5em;
+      font-size: 3em;
       margin-bottom: 20px;
     }
 
     #countdown {
       font-size: 3em;
       font-weight: bold;
-      color: #00ff99;
+      color: #00ffcc;
+      text-shadow: 2px 2px 5px #000;
+    }
+
+    @media (max-width: 600px) {
+      h1, #countdown {
+        font-size: 2em;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>WoW Everfresh - Lancement dans :</h1>
-  <div id="countdown">Chargement...</div>
+  <h1>WoW Everfresh Launches In</h1>
+  <div id="countdown">Loading...</div>
 
   <script>
-    // Définir l'heure de lancement (ajuste selon ton fuseau horaire)
-    const releaseDate = new Date("2025-08-02T20:00:00"); // 2 août 2025 à 20h
+    // Set the launch time (adjust as needed)
+    const releaseDate = new Date("2025-08-02T20:00:00"); // Aug 2, 2025 at 20:00 (8 PM)
 
     function updateCountdown() {
       const now = new Date();
       const diff = releaseDate - now;
 
       if (diff <= 0) {
-        document.getElementById("countdown").innerHTML = "Le serveur est lancé !";
+        document.getElementById("countdown").textContent = "The server is live!";
         return;
       }
 
@@ -49,11 +62,10 @@
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      document.getElementById("countdown").innerHTML =
+      document.getElementById("countdown").textContent =
         `${hours}h ${minutes}m ${seconds}s`;
     }
 
-    // Mettre à jour chaque seconde
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
