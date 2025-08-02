@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>WoW Everfresh Launch Countdown</title>
   <style>
     body {
@@ -42,7 +42,8 @@
       padding: 20px;
       border-radius: 15px;
       max-width: 600px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-align: left;
     }
 
     a {
@@ -55,19 +56,31 @@
       text-decoration: underline;
     }
 
-    pre {
-      text-align: left;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      margin-top: 10px;
-      background-color: #111;
+    .instructions {
+      margin: 0 auto;
+      padding-left: 20px;
+      list-style-position: inside;
+      line-height: 1.6;
+    }
+
+    .instructions li {
+      margin-bottom: 12px;
+      background-color: rgba(255, 255, 255, 0.05);
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 8px;
+    }
+
+    .instructions code {
+      background-color: #111;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #00ffcc;
       font-family: monospace;
     }
 
     @media (max-width: 600px) {
-      h1, #countdown {
+      h1,
+      #countdown {
         font-size: 2em;
       }
 
@@ -82,34 +95,41 @@
   <div id="countdown">Loading...</div>
 
   <div class="content">
-    <p><strong>Download the WOTLK client:</strong><br>
-      <a href="http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file" target="_blank">
-        Click here to download
-      </a>
+    <p><strong>Download the WOTLK client:</strong><br />
+      <a
+        href="http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file"
+        target="_blank"
+        >Click here to download</a
+      >
     </p>
 
     <p><strong>Connection Instructions:</strong></p>
-    <pre>
-1) Edit \Data\enUS\realmlist.wtf  
-2) Make sure realmlist.wtf is not set to read-only  
-3) Replace its contents with:
-   set realmlist ef-rebirth.com  
-4) After triple-checking that it's correct,  
-   run Wow.exe and log in using the credentials  
-   you created via the Discord bot.
-    </pre>
+    <ol class="instructions">
+      <li>
+        <strong>Navigate to:</strong> <code>\Data\enUS\realmlist.wtf</code>
+      </li>
+      <li><strong>Ensure:</strong> The file is <u>not</u> set to read-only</li>
+      <li>
+        <strong>Replace contents with:</strong
+        ><br /><code>set realmlist ef-rebirth.com</code>
+      </li>
+      <li>
+        <strong>Save and run:</strong> <code>Wow.exe</code>, then log in using
+        the credentials created via the Discord bot.
+      </li>
+    </ol>
   </div>
 
   <script>
     // Launch time: August 2, 2025 at 17:00 (Paris time)
-    const releaseDate = new Date("2025-08-02T17:00:00+02:00");
+    const releaseDate = new Date('2025-08-02T17:00:00+02:00');
 
     function updateCountdown() {
       const now = new Date();
       const diff = releaseDate - now;
 
       if (diff <= 0) {
-        document.getElementById("countdown").textContent = "The server is live!";
+        document.getElementById('countdown').textContent = 'The server is live!';
         return;
       }
 
@@ -117,8 +137,9 @@
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      document.getElementById("countdown").textContent =
-        `${hours}h ${minutes}m ${seconds}s`;
+      document.getElementById(
+        'countdown'
+      ).textContent = `${hours}h ${minutes}m ${seconds}s`;
     }
 
     setInterval(updateCountdown, 1000);
