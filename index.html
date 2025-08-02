@@ -1,7 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Compte à rebours WoW Everfresh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    #countdown {
+      font-size: 3em;
+      font-weight: bold;
+      color: #00ff99;
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <h1>WoW Everfresh - Lancement dans :</h1>
+  <div id="countdown">Chargement...</div>
+
+  <script>
+    // Définir l'heure de lancement (ajuste selon ton fuseau horaire)
+    const releaseDate = new Date("2025-08-02T20:00:00"); // 2 août 2025 à 20h
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = releaseDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").innerHTML = "Le serveur est lancé !";
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("countdown").innerHTML =
+        `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Mettre à jour chaque seconde
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
 </body>
 </html>
