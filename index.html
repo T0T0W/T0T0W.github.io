@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-image: url('wow-bg.jpg'); /* Replace with your image */
+      background-image: url('wow-bg.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -96,32 +96,23 @@
 
   <div class="content">
     <p><strong>Download the WOTLK client:</strong><br />
-      <a
-        href="http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file"
-        target="_blank"
-        >Click here to download</a
-      >
+      <a href="http://www.mediafire.com/file/oa7l0qkmcm72mrk/WoW_3.3.5a.zip/file" target="_blank">Click here to download</a>
+    </p>
+
+    <p><strong>Join our Discord:</strong><br />
+      <a href="https://discord.gg/5RS8V7RHcw" target="_blank">WoW Everfresh Discord</a>
     </p>
 
     <p><strong>Connection Instructions:</strong></p>
     <ol class="instructions">
-      <li>
-        <strong>Navigate to:</strong> <code>\Data\enUS\realmlist.wtf</code>
-      </li>
+      <li><strong>Navigate to:</strong> <code>\Data\enUS\realmlist.wtf</code></li>
       <li><strong>Ensure:</strong> The file is <u>not</u> set to read-only</li>
-      <li>
-        <strong>Replace contents with:</strong
-        ><br /><code>set realmlist ef-rebirth.com</code>
-      </li>
-      <li>
-        <strong>Save and run:</strong> <code>Wow.exe</code>, then log in using
-        the credentials created via the Discord bot.
-      </li>
+      <li><strong>Replace contents with:</strong><br /><code>set realmlist ef-rebirth.com</code></li>
+      <li><strong>Save and run:</strong> <code>Wow.exe</code>, then log in using the credentials created via the Discord bot.</li>
     </ol>
   </div>
 
   <script>
-    // Launch time: August 2, 2025 at 17:00 (Paris time)
     const releaseDate = new Date('2025-08-02T17:00:00+02:00');
 
     function updateCountdown() {
@@ -137,9 +128,7 @@
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      document.getElementById(
-        'countdown'
-      ).textContent = `${hours}h ${minutes}m ${seconds}s`;
+      document.getElementById('countdown').textContent = `${hours}h ${minutes}m ${seconds}s`;
     }
 
     setInterval(updateCountdown, 1000);
