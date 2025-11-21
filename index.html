@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toto's Secret Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&display=swap');
+
+        :root {
+            --terminal-green: #0f0;
+            --terminal-dim: #003b00;
+            --bg-color: #050505;
+            --glitch-color-1: #0ff;
+            --glitch-color-2: #f0f;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--terminal-green);
+            font-family: 'Fira Code', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Canvas for Matrix Rain */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* CRT Scanline Effect Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: 50;
+            pointer-events: none;
+            animation: scroll 10s linear infinite;
+        }
+        
+        /* Subtle CRT flicker */
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(18, 16, 16, 0.1);
+            opacity: 0;
+            z-index: 50;
+            animation: flicker 0.15s infinite;
+            pointer-events: none;
+        }
+
+        /* The Main Content Container */
+        .terminal-window {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            background: rgba(5, 5, 5, 0.75); /* Darken backdrop for readability */
+            backdrop-filter: blur(2px);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hacker Typography */
+        h1, h2, h3 {
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--terminal-green);
+        }
+
+        a {
+            color: var(--terminal-green);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--terminal-green);
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            background: var(--terminal-green);
+            color: black;
+            box-shadow: 0 0 15px var(--terminal-green);
+            cursor: pointer;
+        }
+
+        /* Blinking Cursor */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--terminal-green);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        /* Glitch Effect Class */
+        .glitch-wrapper {
+            position: relative;
+        }
+        
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Utility Animations */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes scroll { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
+        @keyframes flicker { 0% { opacity: 0.02; } 50% { opacity: 0.05; } 100% { opacity: 0.02; } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #003b00; border: 1px solid #0f0; }
+        ::-webkit-scrollbar-thumb:hover { background: #0f0; }
+
+        /* Card Styling */
+        .data-card {
+            border: 1px solid var(--terminal-green);
+            background: rgba(0, 20, 0, 0.6);
+            transition: transform 0.2s;
+        }
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 0px var(--terminal-green);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Visual Effects Overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Main Content -->
+    <div class="terminal-window">
+        
+        <!-- Header / Nav -->
+        <header class="flex justify-between items-center border-b border-green-900 pb-4 mb-12">
+            <div class="text-2xl font-bold tracking-widest glitch-wrapper">
+                <span class="mr-2">></span>TOTO'S_NODE
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm">
+                <a href="#identity">[ IDENTITY ]</a>
+                <a href="#projects">[ PROTOCOLS ]</a>
+                <a href="#comms">[ ENCRYPTED_COMMS ]</a>
+            </nav>
+            <!-- Mobile Menu Button (Visual only for this demo) -->
+            <div class="md:hidden border border-green-500 px-2 py-1 text-xs cursor-pointer hover:bg-green-900">
+                MENU
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-5xl mx-auto w-full">
+
+            <!-- Hero Section -->
+            <section id="identity" class="min-h-[60vh] flex flex-col justify-center">
+                <p class="text-sm text-green-700 mb-2">Running startup sequence...</p>
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    <span id="typing-text"></span><span class="cursor"></span>
+                </h1>
+                <p class="max-w-2xl text-green-400 leading-relaxed mb-8">
+                    Access granted. Welcome to the private digital construct of Toto. 
+                    I operate in the shadows of the web, building tools and breaking codes.
+                    Proceed with caution.
+                </p>
+                
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" class="px-6 py-3 border border-green-500 hover:bg-green-500 hover:text-black font-bold transition-colors text-sm tracking-widest">
+                        INITIATE_SCROLL
+                    </button>
+                    <button onclick="copyToClipboard()" class="px-6 py-3 border border-green-900 text-green-700 hover:border-green-500 hover:text-green-500 transition-colors text-sm tracking-widest">
+                        COPY_KEY
+                    </button>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-20">
+                <div class="flex items-center mb-12">
+                    <span class="h-px w-12 bg-green-500 mr-4"></span>
+                    <h2 class="text-2xl font-bold">ACTIVE_PROTOCOLS</h2>
+                    <span class="h-px flex-grow bg-green-900 ml-4"></span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Project 1 -->
+                    <div class="data-card p-6">
+                        <div class="text-xs text-green-600 mb-2">ID: 0xA12</div>
+                        <h3 class="text-xl font-bold mb-3">Neural_Net_V1</h3>
+                        <p class="text-sm text-green-400 opacity-80 mb-4">
+                            An experimental AI model designed to classify encrypted data packets.
+                        </p>
+                        <div class="flex gap-2 text-xs font-bold">
+                            <span class="px-2 py-1 bg-green-900 text-green-300">PYTHON</span>
+                            <span class="px-2 py-1 bg-green-900 text-green-300">TENSORFLOW</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="data-card p-6">
+                        <div class="text-xs text-green-600 mb-2">ID: 0xB45</div>
+                        <h3 class="text-xl font-bold mb-3">Cyber_Deck</h3>
+                        <p class="text-sm text-green-400 opacity-80 mb-4">
+                            Custom hardware interface for mobile penetration testing.
+                        </p>
+                        <div class="flex gap-2 text-xs font-bold">
+                            <span class="px-2 py-1 bg-green-900 text-green-300">C++</span>
+                            <span class="px-2 py-1 bg-green-900 text-green-300">ARDUINO</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="data-card p-6">
+                        <div class="text-xs text-green-600 mb-2">ID: 0xC99</div>
+                        <h3 class="text-xl font-bold mb-3">Ghost_Shell</h3>
+                        <p class="text-sm text-green-400 opacity-80 mb-4">
+                            A minimalist, distraction-free terminal environment for web surfing.
+                        </p>
+                        <div class="flex gap-2 text-xs font-bold">
+                            <span class="px-2 py-1 bg-green-900 text-green-300">REACT</span>
+                            <span class="px-2 py-1 bg-green-900 text-green-300">NODE</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="comms" class="py-20 mb-20">
+                 <div class="flex items-center mb-12">
+                    <span class="h-px w-12 bg-green-500 mr-4"></span>
+                    <h2 class="text-2xl font-bold">ESTABLISH_UPLINK</h2>
+                    <span class="h-px flex-grow bg-green-900 ml-4"></span>
+                </div>
+                
+                <div class="border border-green-800 p-8 bg-black/50 relative overflow-hidden">
+                    <!-- Decorational corner markers -->
+                    <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-green-500"></div>
+                    <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-green-500"></div>
+                    <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-green-500"></div>
+                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-green-500"></div>
+
+                    <p class="mb-6 text-green-300">
+                        Secure channel available. Send your encrypted message.
+                    </p>
+                    
+                    <form onsubmit="event.preventDefault(); sendMessage();" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold mb-1 text-green-600">CODENAME</label>
+                                <input type="text" class="w-full bg-black border border-green-800 p-3 text-green-500 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_#0f0]" placeholder="Enter alias...">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-1 text-green-600">FREQUENCY (EMAIL)</label>
+                                <input type="email" class="w-full bg-black border border-green-800 p-3 text-green-500 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_#0f0]" placeholder="user@net.com">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1 text-green-600">PAYLOAD</label>
+                            <textarea rows="4" class="w-full bg-black border border-green-800 p-3 text-green-500 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_#0f0]" placeholder="Type message sequence..."></textarea>
+                        </div>
+                        <button type="submit" class="bg-green-900 text-green-100 px-8 py-3 font-bold text-sm tracking-widest hover:bg-green-600 hover:text-black transition-colors uppercase">
+                            Transmit Data
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t border-green-900 pt-8 pb-4 text-center text-xs text-green-700">
+            <p>SYSTEM STATUS: ONLINE | © 2025 TOTO INCORPORATED</p>
+            <p class="mt-2">EOF RECEIVED</p>
+        </footer>
+    </div>
+
+    <!-- Message Sent Modal (Hidden by default) -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none opacity-0 transition-opacity duration-500">
+        <div class="bg-black border-2 border-green-500 p-8 shadow-[0_0_50px_#0f0]">
+            <h3 class="text-2xl font-bold mb-2 text-center blink">TRANSMISSION SENT</h3>
+            <p class="text-green-400 text-center">The system has accepted your data packet.</p>
+        </div>
+    </div>
+
+    <script>
+        /* --- MATRIX RAIN EFFECT --- */
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        // Matrix characters - Katakana + Latin + Numerals
+        const str = "アィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const matrix = str.split('');
+
+        const fontSize = 14;
+        let columns = width / fontSize; 
+
+        const drops = [];
+        for(let x = 0; x < columns; x++)
+            drops[x] = 1;
+
+        function draw() {
+            // Black BG for the canvas
+            // Translucent BG to show trail
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = "#0F0"; // Green text
+            ctx.font = fontSize + "px monospace";
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrix[Math.floor(Math.random() * matrix.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Send the drop back to the top randomly after it has crossed the screen
+                if(drops[i] * fontSize > height && Math.random() > 0.975)
+                    drops[i] = 0;
+
+                // Increment Y coordinate
+                drops[i]++;
+            }
+        }
+
+        // Loop the animation
+        setInterval(draw, 33);
+
+        // Resize listener
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = width / fontSize;
+            // Reset drops partially to avoid clutter
+            for(let x = 0; x < columns; x++) {
+                if (!drops[x]) drops[x] = 1;
+            }
+        });
+
+
+        /* --- TYPING EFFECT --- */
+        const texts = ["HELLO_WORLD", "I AM TOTO", "SYSTEM_BREACHED..."];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typeSpeed = 100;
+        const deleteSpeed = 50;
+        const delayBetween = 2000;
+        
+        // Use a single phrase for the main header, or loop through array.
+        // For this design, we will just type the main title once nicely.
+        const mainTitle = "HELLO WORLD. I AM TOTO.";
+        const typingElement = document.getElementById('typing-text');
+
+        function typeWriter() {
+            if (charIndex < mainTitle.length) {
+                typingElement.innerHTML += mainTitle.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, Math.random() * 100 + 50); // Random typing speed variation
+            }
+        }
+
+        // Start typing after a slight delay
+        setTimeout(typeWriter, 1000);
+
+
+        /* --- INTERACTION LOGIC --- */
+        
+        function sendMessage() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                document.querySelector('form').reset();
+            }, 3000);
+        }
+
+        function copyToClipboard() {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = "SSH-KEY-XYZ-999-SECRET";
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
+        }
+
+    </script>
+</body>
+</html>
