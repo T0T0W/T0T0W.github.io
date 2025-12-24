@@ -3,42 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma Watchlist</title>
+    <title>CinéList — Ma Watchlist Perso</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header>
-        <div class="logo">🎬 Ma Watchlist</div>
-        <button id="btn-settings">⚙️ Config</button>
+        <div class="logo">🎬 CinéList</div>
+        <button id="btn-settings" class="icon-btn">⚙️ Configuration</button>
     </header>
 
     <main>
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Rechercher un film ou une série...">
-            <div id="search-results" class="results-grid hidden"></div>
+        <div class="search-section">
+            <input type="text" id="search-input" placeholder="Rechercher un film ou une série..." autocomplete="off">
+            <div id="search-results" class="results-overlay hidden"></div>
         </div>
 
-        <h2>Ma Liste</h2>
+        <div class="list-header">
+            <h2>Ma Liste</h2>
+            <span id="items-count">0 éléments</span>
+        </div>
         <div id="my-list" class="movie-grid">
-            <p class="empty-msg">Chargement de ta liste...</p>
+            <p class="status-msg">Chargement de votre collection...</p>
         </div>
     </main>
 
     <div id="config-modal" class="modal hidden">
         <div class="modal-content">
-            <h3>Configuration</h3>
-            <p>Pour synchroniser ta liste, nous utilisons GitHub Gist.</p>
+            <h3>Connexion GitHub</h3>
+            <p>Entrez votre <strong>Personal Access Token</strong> pour synchroniser votre liste sur tous vos appareils.</p>
             
-            <label>GitHub Personal Token (nécessite le droit 'gist')</label>
-            <input type="password" id="gh-token" placeholder="ghp_...">
+            <div class="input-group">
+                <label>GitHub Token (Scope: gist)</label>
+                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
             
-            <label>ID du Gist (JSON)</label>
-            <input type="text" id="gist-id" placeholder="L'ID de ton Gist">
-            
-            <button id="save-config">Sauvegarder</button>
-            <button id="close-config" class="secondary">Fermer</button>
+            <div class="modal-actions">
+                <button id="save-config" class="btn-primary">Connecter</button>
+                <button id="close-config" class="btn-secondary">Annuler</button>
+            </div>
+            <p class="help-text">Le token est stocké localement dans votre navigateur.</p>
         </div>
     </div>
 
