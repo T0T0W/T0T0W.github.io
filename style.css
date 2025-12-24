@@ -1,21 +1,108 @@
+:root {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --primary: #e50914; /* Rouge style Netflix */
+    --text: #ffffff;
+    --text-sec: #b3b3b3;
+}
+
 body {
-  background: #0f172a;
-  color: #e5e7eb;
-  font-family: system-ui;
-  padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
 }
 
-button {
-  background: #6366f1;
-  border: none;
-  padding: 8px 12px;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
+.logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); }
+
+main { padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+/* Recherche */
+.search-container { position: relative; margin-bottom: 40px; }
 input {
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    background: var(--card);
+    color: white;
+    font-size: 1.1rem;
 }
+
+/* Grilles */
+.movie-grid, .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.results-grid {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 50;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Cartes */
+.card {
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    position: relative;
+}
+.card:hover { transform: scale(1.05); }
+.card img { width: 100%; height: 225px; object-fit: cover; }
+.card-info { padding: 10px; }
+.card h4 { margin: 0; font-size: 0.9rem; }
+.card p { font-size: 0.8rem; color: var(--text-sec); margin: 5px 0; }
+
+.btn-add, .btn-remove {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+.btn-add { background: var(--text); color: black; }
+.btn-remove { background: #333; color: white; }
+
+/* Utilitaires */
+.hidden { display: none; }
+
+/* Modal */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 200;
+}
+.modal-content {
+    background: var(--card); padding: 30px; border-radius: 10px; width: 90%; max-width: 400px;
+}
+.modal-content input { margin-bottom: 15px; border: 1px solid #333; }
+.modal-content button {
+    padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;
+}
+.secondary { background: transparent !important; border: 1px solid white !important; margin-left: 10px; }
