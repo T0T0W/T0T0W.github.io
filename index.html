@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CinéList — Ma Watchlist Perso</title>
+    <title>CinéList — Ma Watchlist</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <div id="status-bar" class="status-bar hidden">
+        <span id="status-spinner" class="spinner"></span>
+        <span id="status-text">Prêt</span>
+    </div>
+
     <header>
         <div class="logo">🎬 CinéList</div>
-        <button id="btn-settings" class="icon-btn">⚙️ Configuration</button>
+        <button id="btn-settings" class="icon-btn">⚙️ Config</button>
     </header>
 
     <main>
@@ -21,29 +26,26 @@
         </div>
 
         <div class="list-header">
-            <h2>Ma Liste</h2>
+            <h2>Ma Collection</h2>
             <span id="items-count">0 éléments</span>
         </div>
         <div id="my-list" class="movie-grid">
-            <p class="status-msg">Chargement de votre collection...</p>
+            <p class="status-msg">Connexion en cours...</p>
         </div>
     </main>
 
     <div id="config-modal" class="modal hidden">
         <div class="modal-content">
-            <h3>Connexion GitHub</h3>
-            <p>Entrez votre <strong>Personal Access Token</strong> pour synchroniser votre liste sur tous vos appareils.</p>
-            
+            <h3>Configuration GitHub</h3>
+            <p>Ton Token permet de synchroniser ta liste sur ton compte GitHub de façon privée.</p>
             <div class="input-group">
-                <label>GitHub Token (Scope: gist)</label>
+                <label>GitHub Personal Token (Scope: gist)</label>
                 <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
             </div>
-            
             <div class="modal-actions">
-                <button id="save-config" class="btn-primary">Connecter</button>
-                <button id="close-config" class="btn-secondary">Annuler</button>
+                <button id="save-config" class="btn-primary">Enregistrer</button>
+                <button id="close-config" class="btn-secondary">Fermer</button>
             </div>
-            <p class="help-text">Le token est stocké localement dans votre navigateur.</p>
         </div>
     </div>
 
