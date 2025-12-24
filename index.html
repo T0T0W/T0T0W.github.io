@@ -150,7 +150,7 @@
         .search-card:hover { background: var(--bg-element); }
         .search-card .poster-wrapper { width: 60px; aspect-ratio: 2/3; border-radius: 6px; margin-right: 12px; }
         .search-card .card-content { padding: 0; justify-content: center; }
-        .search-card .card-overview { display: none; } /* Hide overview in search results for space */
+        .search-card .card-overview { display: none; } 
 
         /* --- Status / Toast --- */
         #status-bar {
@@ -200,7 +200,6 @@
         .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
         .btn-ghost:hover { border-color: var(--text-muted); color: var(--text-main); }
 
-        /* --- Utilities --- */
         .hidden { display: none !important; }
         .empty-state {
             text-align: center; padding: 4rem 1rem; color: var(--text-muted);
@@ -266,12 +265,12 @@
         /**
          * LOGIQUE DE L'APPLICATION
          */
-        const TMDB_KEY = 'd8b62990089ff760df22fac251ad7371'; // Clé publique (démo)
+        const TMDB_KEY = 'd8b62990089ff760df22fac251ad7371'; 
         const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
         let watchlist = [];
         let ghToken = localStorage.getItem('gh_token') || '';
-        let gistId = null;
+        let gistId = localStorage.getItem('gh_gistid') || null; // On récupère l'ID sauvegardé !
 
         // Éléments DOM
         const statusText = document.getElementById('status-text');
@@ -306,21 +305,14 @@
                 return;
             }
             updateStatus("Connexion à GitHub...", true);
+            
             try {
-                // Liste les gists pour trouver celui qui contient 'movies.json'
-                const res = await fetch('https://api.github.com/gists', {
-                    headers: { 'Authorization': `token ${ghToken}` }
-                });
-                if (!res.ok) throw new Error("Token invalide");
-                
-                const gists = await res.json();
-                const foundGist = gists.find(g => g.files && g.files['movies.json']);
-
-                if (foundGist) {
-                    gistId = foundGist.id;
-                    await loadWatchlist(foundGist.files['movies.json'].raw_url);
+                // Si on a déjà un ID de gist, on le charge DIRECTEMENT (évite le cache de liste)
+                if (gistId) {
+                    await fetchSpecificGist(gistId);
                 } else {
-                    await createGist();
+                    // Sinon on cherche parmi la liste des gists
+                    await searchForGist();
                 }
             } catch (err) {
                 console.error(err);
@@ -329,15 +321,57 @@
             }
         }
 
-        async function loadWatchlist(url) {
-            updateStatus("Synchronisation...", true);
+        async function fetchSpecificGist(id) {
             try {
-                // Ajout timestamp pour éviter le cache navigateur agressif
-                const contentRes = await fetch(`${url}?t=${new Date().getTime()}`);
+                const res = await fetch(`https://api.github.com/gists/${id}`, {
+                    headers: { 'Authorization': `token ${ghToken}` }
+                });
+                if (!res.ok) throw new Error("Gist introuvable");
+                
+                const gist = await res.json();
+                if (gist.files && gist.files['movies.json']) {
+                    await loadWatchlist(gist.files['movies.json'].raw_url);
+                } else {
+                    // Le gist existe mais n'a pas le bon fichier
+                    await createGist();
+                }
+            } catch (e) {
+                // Si l'ID stocké est invalide, on repart à zéro
+                localStorage.removeItem('gh_gistid');
+                gistId = null;
+                await searchForGist();
+            }
+        }
+
+        async function searchForGist() {
+            const res = await fetch('https://api.github.com/gists', {
+                headers: { 'Authorization': `token ${ghToken}` }
+            });
+            if (!res.ok) throw new Error("Token invalide");
+            
+            const gists = await res.json();
+            const foundGist = gists.find(g => g.files && g.files['movies.json']);
+
+            if (foundGist) {
+                gistId = foundGist.id;
+                localStorage.setItem('gh_gistid', gistId); // On sauvegarde l'ID pour la prochaine fois !
+                await loadWatchlist(foundGist.files['movies.json'].raw_url);
+            } else {
+                await createGist();
+            }
+        }
+
+        async function loadWatchlist(url) {
+            updateStatus("Chargement des données...", true);
+            try {
+                // FIX: cache: 'no-store' force le navigateur à ne rien garder en mémoire
+                // Ajout de ?t=... en plus pour être sûr
+                const contentRes = await fetch(`${url}?t=${new Date().getTime()}`, { cache: 'no-store' });
+                
                 if (!contentRes.ok) throw new Error();
                 watchlist = await contentRes.json();
                 renderWatchlist();
-                updateStatus("Liste chargée !", false);
+                updateStatus("Liste à jour !", false);
             } catch (e) {
                 updateStatus("Erreur lecture données", false, true);
             }
@@ -351,12 +385,13 @@
                     headers: { 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         description: "Données CinéList",
-                        public: false, // Important : privé
+                        public: false,
                         files: { "movies.json": { content: "[]" } }
                     })
                 });
                 const data = await res.json();
                 gistId = data.id;
+                localStorage.setItem('gh_gistid', gistId); // On sauvegarde l'ID immédiatement
                 updateStatus("Prêt ! Ajoutez vos premiers films.", false);
                 renderWatchlist();
             } catch (e) { 
@@ -414,14 +449,13 @@
             }
 
             filtered.forEach(item => {
-                const card = createCard(item, false, true); // true = mode compact pour recherche
+                const card = createCard(item, false, true); 
                 resultsOverlay.appendChild(card);
             });
         }
 
         function createCard(item, isInWatchlist, isCompact = false) {
             const div = document.createElement('div');
-            // Utilise la classe 'card' par défaut, ou 'card search-card' si c'est pour la recherche
             div.className = isCompact ? 'card search-card' : 'card';
             
             const title = item.title || item.name;
@@ -429,11 +463,9 @@
             const year = date ? date.substring(0, 4) : 'N/A';
             const poster = item.poster_path 
                 ? IMG_BASE + item.poster_path 
-                : `https://picsum.photos/seed/${item.id}/200/300?blur=2`; // Placeholder aléatoire si pas d'image
+                : `https://picsum.photos/seed/${item.id}/200/300?blur=2`; 
 
-            // Note formatée
             const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
-
             const typeLabel = item.media_type === 'tv' ? 'Série' : 'Film';
             const overview = item.overview || "Aucune description disponible.";
 
@@ -455,20 +487,16 @@
                 </div>
             `;
 
-            // Action au clic
             div.querySelector('button').onclick = () => {
                 const exists = watchlist.some(m => m.id === item.id);
                 
                 if (exists) {
-                    // Suppression
                     watchlist = watchlist.filter(m => m.id !== item.id);
                     updateStatus(`${title} retiré`, false);
                 } else {
-                    // Ajout
                     watchlist.unshift(item);
                     updateStatus(`${title} ajouté !`, false);
                     if (isCompact) {
-                        // Si on ajoute depuis la recherche, on ferme la recherche
                         resultsOverlay.classList.remove('active');
                         searchInput.value = '';
                     }
@@ -512,7 +540,6 @@
             }
         };
 
-        // Fermer la recherche si on clique ailleurs
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-container')) {
                 resultsOverlay.classList.remove('active');
@@ -521,7 +548,7 @@
 
         // --- Initialisation ---
         if (ghToken) initGitHub();
-        else renderWatchlist(); // Affiche l'état vide sans se connecter
+        else renderWatchlist(); 
 
     </script>
 </body>
