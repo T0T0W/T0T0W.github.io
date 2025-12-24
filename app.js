@@ -44,7 +44,7 @@ async function initGitHub() {
         if (foundGist) {
             gistId = foundGist.id;
             updateStatus("Chargement de votre liste...");
-            const contentRes = await fetch(foundGist.files['movies.json'].raw_url);
+            const contentRes = await fetch(`${foundGist.files['movies.json'].raw_url}?t=${new Date().getTime()}`);
             watchlist = await contentRes.json();
             renderWatchlist();
             updateStatus(`${watchlist.length} titres chargés`, false);
