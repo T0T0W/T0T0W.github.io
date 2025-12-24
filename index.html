@@ -1,15 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Connexion</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Watchlist</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<h1>🔐 Accès privé</h1>
-<button onclick="login()">Se connecter avec GitHub</button>
+    <header>
+        <div class="logo">🎬 Ma Watchlist</div>
+        <button id="btn-settings">⚙️ Config</button>
+    </header>
 
-<script src="auth.js"></script>
+    <main>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Rechercher un film ou une série...">
+            <div id="search-results" class="results-grid hidden"></div>
+        </div>
+
+        <h2>Ma Liste</h2>
+        <div id="my-list" class="movie-grid">
+            <p class="empty-msg">Chargement de ta liste...</p>
+        </div>
+    </main>
+
+    <div id="config-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Configuration</h3>
+            <p>Pour synchroniser ta liste, nous utilisons GitHub Gist.</p>
+            
+            <label>GitHub Personal Token (nécessite le droit 'gist')</label>
+            <input type="password" id="gh-token" placeholder="ghp_...">
+            
+            <label>ID du Gist (JSON)</label>
+            <input type="text" id="gist-id" placeholder="L'ID de ton Gist">
+            
+            <button id="save-config">Sauvegarder</button>
+            <button id="close-config" class="secondary">Fermer</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
